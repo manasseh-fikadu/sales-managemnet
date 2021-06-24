@@ -1,9 +1,6 @@
-/*Program Assumptions:
-		1. We assume the users know their respective numbers and product numbers.
-		2. We assume the user enters all slips once at the end of the day.*/
-
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 using namespace std;
 
 //function declaration
@@ -70,28 +67,54 @@ int menuDisplay(int &num)
 }
 
 //This function is reponsible for receiving user input
+//We assume the user enters all slips once at the end of the day.
 void passInSlip(int &prodAmount, int &personId, int &productId)
 {
+	cout << "\nProducts List" << endl;
+	cout << "---------------" << endl;
+	cout << "1. Jeans" << endl;
+	cout << "2. Jackets" << endl;
+	cout << "3. T-Shirts" << endl;
+	cout << "4. Shorts" << endl;
+	cout << "5. Socks" << endl;
 	while (dayNum < 1) /*Here we can change the number of days in a month by changing dayNums range. By default here number of days in a month is 1.*/
 	{
 		for (int i = 0; i < 4; i++)
 		{
+		prompt1:
 			cout << "\nEnter Your Id[1-4]: ";
 			cin >> personId;
+			if (personId < 1 || personId > 4)
+			{
+				cout << "\nInvalid Id!" << endl;
+				goto prompt1;
+			}
 			value1 = personId - 1;
 			cout << "Welcome " << salesPersons[value1] << "!" << endl;
+		prompt3:
 			cout << "How many products did you sell today? ";
 			cin >> prodAmount;
+			if (prodAmount < 1 || prodAmount > 5)
+			{
+				cout << "\nWe only sell 5 products! Please enter numbers from 1-5!" << endl;
+				goto prompt3;
+			}
 			for (int j = 0; j < prodAmount; j++)
 			{
+			prompt2:
 				cout << "Enter Product Id[1-5]: ";
 				cin >> productId;
+				if (productId < 1 || productId > 5)
+				{
+					cout << "\nInvalid Product Id!" << endl;
+					goto prompt2;
+				}
 				value2 = productId - 1;
 			prompt:
 				cout << "Enter the total birr value of " << products[value2] << ": ";
 				cin >> rev[value2][value1];
 				//checking for price errors
-				if (rev[value2][value1] < 10)
+				if (rev[value2][value1] < 10 || rev[value2][value1] > 2500)
 				{
 					cout << "\nInvalid Price!" << endl;
 					goto prompt;
@@ -151,11 +174,46 @@ float tableGenerator()
 	cout << setw(10) << "Bonus";
 	for (int i = 0; i < 4; i++)
 	{
-		bonusSalary[i] += totalRevenue[i] * 0.05;
+		bonusSalary[i] += totalRevenue[i] * (5.0 / 100.0);
 		cout << setw(10) << left << bonusSalary[i];
 	}
 	cout << endl;
 	cout << "==================================================================" << endl;
+
+	//Additional feature
+	//Displaying who and what was sold the greatest and the lowest
+	int n = sizeof(totalRevenue) / sizeof(totalRevenue[0]);
+	int n1 = sizeof(totalProduct) / sizeof(totalProduct[0]);
+	int max = *max_element(totalRevenue, totalRevenue + n);
+	int min = *min_element(totalRevenue, totalRevenue + n);
+	int max1 = *max_element(totalProduct, totalProduct + n1);
+	int min1 = *min_element(totalProduct, totalProduct + n1);
+
+	//Determining greatest and lowest selllers for that month
+	for (int i = 0; i < 4; i++)
+	{
+		if (max == totalRevenue[i])
+		{
+			cout << "\n> " << salesPersons[i] << " sold the greatest this month!" << endl;
+		}
+		else if (min == totalRevenue[i])
+		{
+			cout << "\n> " << salesPersons[i] << " sold the least this month!" << endl;
+		}
+	}
+
+	//Determining greatest and lowest products sold that month
+	for (int i = 0; i < 5; i++)
+	{
+		if (max1 == totalProduct[i])
+		{
+			cout << "\n> " << products[i] << " were sold the greatest this month!" << endl;
+		}
+		else if (min1 == totalProduct[i])
+		{
+			cout << "\n> " << products[i] << " were sold the least this month!" << endl;
+		}
+	}
 
 	return totalRevenue[4], totalProduct[5], salesPersons[4], products[5], bonusSalary[4];
 }
@@ -196,6 +254,7 @@ srMenu:
 	}
 	else if (choice == 3)
 	{
+		cout << "\nYou are back on the main menu!" << endl;
 	}
 	else
 	{
