@@ -10,11 +10,10 @@ void passInSlip(int &, int &, int &);
 int menuDisplay(int &);
 
 //global variable declaration
-int menuNum, prodAmount, productsId, salesPersonsId, choice, n;
-int dayNum = 0, value1, value2;
+int menuNum, prodAmount, productsId, salesPersonsId, choice, n, dayNum = 0, value1, value2;
 string salesPersons[] = {"Abebe", "Hana", "Dawit", "Yordanos"};
-string products[] = {"Jeans", "Jackets", "T-Shirts", "Shorts", "Socks"};
-int rev[5][4] = {0};
+string products[] = {"Jeans", "Jackets", "T-Shirts", "SportsWear", "Shoes"};
+int revenue[5][4] = {0};
 int totalRevenue[4] = {0};
 int totalProduct[5] = {0};
 float bonusSalary[4] = {0};
@@ -52,7 +51,7 @@ menu:
 int menuDisplay(int &num)
 {
 	cout << "\n================================" << endl;
-	cout << "           ABE GARMENT" << endl;
+	cout << "         ABE CLOTHING" << endl;
 	cout << "  SALES MANAGEMENT SYSTEM MENU" << endl;
 	cout << "================================" << endl;
 	cout << "\n1. Pass in a Slip" << endl;
@@ -67,7 +66,7 @@ int menuDisplay(int &num)
 }
 
 //This function is reponsible for receiving user input
-//We assume the user enters all slips once at the end of the day.
+//We assume the salesperson enters all slips once at the end of the day.
 void passInSlip(int &prodAmount, int &personId, int &productId)
 {
 	cout << "\nProducts List" << endl;
@@ -75,10 +74,12 @@ void passInSlip(int &prodAmount, int &personId, int &productId)
 	cout << "1. Jeans" << endl;
 	cout << "2. Jackets" << endl;
 	cout << "3. T-Shirts" << endl;
-	cout << "4. Shorts" << endl;
-	cout << "5. Socks" << endl;
-	while (dayNum < 1) /*Here we can change the number of days in a month by changing dayNums range. By default here number of days in a month is 1.*/
+	cout << "4. SportsWear" << endl;
+	cout << "5. Shoes" << endl;
+	while (dayNum < 2) /*Here we can change the number of days in a month by changing dayNums range. By default here number of days in a month is 2.*/
 	{
+		cout << "\nDay " << dayNum + 1 << endl;
+		cout << "------" << endl;
 		for (int i = 0; i < 4; i++)
 		{
 		prompt1:
@@ -106,15 +107,15 @@ void passInSlip(int &prodAmount, int &personId, int &productId)
 				cin >> productId;
 				if (productId < 1 || productId > 5)
 				{
-					cout << "\nInvalid Product Id!" << endl;
+					cout << "\nInvalid Product Id! Please look at the products list." << endl;
 					goto prompt2;
 				}
 				value2 = productId - 1;
 			prompt:
 				cout << "Enter the total birr value of " << products[value2] << ": ";
-				cin >> rev[value2][value1];
+				cin >> revenue[value2][value1];
 				//checking for price errors
-				if (rev[value2][value1] < 10 || rev[value2][value1] > 2500)
+				if (revenue[value2][value1] < 10 || revenue[value2][value1] > 2500)
 				{
 					cout << "\nInvalid Price!" << endl;
 					goto prompt;
@@ -147,8 +148,8 @@ float tableGenerator()
 
 		for (int j = 0; j < 4; j++)
 		{
-			cout << setw(10) << left << rev[i][j];
-			totalProduct[i] += rev[i][j];
+			cout << setw(10) << left << revenue[i][j];
+			totalProduct[i] += revenue[i][j];
 		}
 		cout << setw(10) << totalProduct[i];
 		cout << endl;
@@ -162,7 +163,7 @@ float tableGenerator()
 	{
 		for (int j = 0; j < 5; j++)
 		{
-			totalRevenue[i] += rev[j][i];
+			totalRevenue[i] += revenue[j][i];
 		}
 
 		cout << setw(10) << totalRevenue[i];
@@ -181,7 +182,7 @@ float tableGenerator()
 	cout << "==================================================================" << endl;
 
 	//Additional feature
-	//Displaying who and what was sold the greatest and the lowest
+	//Displaying who and what was sold the greatest and the lowest in a certain month
 	int n = sizeof(totalRevenue) / sizeof(totalRevenue[0]);
 	int n1 = sizeof(totalProduct) / sizeof(totalProduct[0]);
 	int max = *max_element(totalRevenue, totalRevenue + n);
@@ -189,7 +190,7 @@ float tableGenerator()
 	int max1 = *max_element(totalProduct, totalProduct + n1);
 	int min1 = *min_element(totalProduct, totalProduct + n1);
 
-	//Determining greatest and lowest selllers for that month
+	//Determining greatest and lowest sellers for that month
 	for (int i = 0; i < 4; i++)
 	{
 		if (max == totalRevenue[i])
@@ -218,7 +219,7 @@ float tableGenerator()
 	return totalRevenue[4], totalProduct[5], salesPersons[4], products[5], bonusSalary[4];
 }
 
-//This function handles the search menu
+//This function displays the search menu and allows searching
 void search(int &choice)
 {
 srMenu:
@@ -239,7 +240,7 @@ srMenu:
 			 << salesPersons[n - 1] << ": " << endl;
 		cout << "\tSalary: " << salary[n - 1] + bonusSalary[n - 1] << endl;
 		cout << "\t"
-			 << "Sold " << totalRevenue[n - 1] << " birr last month." << endl;
+			 << "Sold " << totalRevenue[n - 1] << " birr this month." << endl;
 		goto srMenu;
 	}
 	else if (choice == 2)
@@ -249,7 +250,7 @@ srMenu:
 		cout << "\n"
 			 << products[n - 1] << ": " << endl;
 		cout << "\t"
-			 << "Were Sold for a total of " << totalProduct[n - 1] << " birr last month.";
+			 << "Were Sold for a total of " << totalProduct[n - 1] << " birr this month.";
 		goto srMenu;
 	}
 	else if (choice == 3)
